@@ -1,98 +1,296 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Pokemon API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API RESTful desenvolvida com **NestJS**, **TypeScript** e **PostgreSQL**
+para autenticação de usuários e gerenciamento de Pokémons.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Funcionalidades
 
-## Description
+-   Cadastro de usuário
+-   Login com JWT
+-   Rota protegida para dados do usuário autenticado
+-   Criar Pokémon
+-   Listar Pokémons
+-   Buscar Pokémon por ID
+-   Atualizar Pokémon
+-   Excluir Pokémon
+-   Regra de autorização: apenas o criador do Pokémon pode editar ou
+    excluir
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+------------------------------------------------------------------------
 
-## Project setup
+## Tecnologias utilizadas
 
-```bash
-$ npm install
+-   Node.js
+-   NestJS
+-   TypeScript
+-   PostgreSQL
+-   TypeORM
+-   JWT
+-   Passport
+-   Bcrypt
+-   Class Validator
+-   Class Transformer
+
+------------------------------------------------------------------------
+
+## Requisitos
+
+Antes de começar, você precisa ter instalado:
+
+-   Node.js
+-   npm
+-   PostgreSQL
+
+------------------------------------------------------------------------
+
+## Instalação
+
+Clone o repositório:
+
+``` bash
+git clone <url-do-repositorio>
 ```
 
-## Compile and run the project
+Entre na pasta do projeto:
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+``` bash
+cd pokemon-api
 ```
 
-## Run tests
+Instale as dependências:
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+``` bash
+npm install
 ```
 
-## Deployment
+------------------------------------------------------------------------
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Configuração do ambiente
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+``` env
+PORT=3000
+
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=pokemon_api
+
+JWT_SECRET=super_secret_key
+JWT_EXPIRES_IN=1d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+------------------------------------------------------------------------
 
-## Resources
+## Banco de dados
 
-Check out a few resources that may come in handy when working with NestJS:
+Crie o banco no PostgreSQL:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+``` sql
+CREATE DATABASE pokemon_api;
+```
 
-## Support
+------------------------------------------------------------------------
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Executando o projeto
 
-## Stay in touch
+Modo desenvolvimento:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+``` bash
+npm run start:dev
+```
 
-## License
+A aplicação estará disponível em:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+    http://localhost:3000
+
+------------------------------------------------------------------------
+
+## Autenticação
+
+A API utiliza autenticação via **JWT**.
+
+Após realizar login, envie o token no header das rotas protegidas:
+
+``` http
+Authorization: Bearer SEU_TOKEN
+```
+
+------------------------------------------------------------------------
+
+## Endpoints
+
+### Auth
+
+#### Registrar usuário
+
+``` http
+POST /auth/register
+```
+
+Body:
+
+``` json
+{
+  "name": "Marcos Vitor",
+  "email": "marcos@email.com",
+  "password": "123456"
+}
+```
+
+#### Login
+
+``` http
+POST /auth/login
+```
+
+Body:
+
+``` json
+{
+  "email": "marcos@email.com",
+  "password": "123456"
+}
+```
+
+------------------------------------------------------------------------
+
+### Users
+
+#### Usuário autenticado
+
+``` http
+GET /users/me
+```
+
+Header:
+
+``` http
+Authorization: Bearer SEU_TOKEN
+```
+
+------------------------------------------------------------------------
+
+### Pokemons
+
+#### Criar Pokémon
+
+``` http
+POST /pokemons
+```
+
+Header:
+
+``` http
+Authorization: Bearer SEU_TOKEN
+```
+
+Body:
+
+``` json
+{
+  "name": "Pikachu",
+  "type": "Electric",
+  "level": 10,
+  "hp": 35,
+  "pokedexNumber": 25
+}
+```
+
+#### Listar Pokémons
+
+``` http
+GET /pokemons
+```
+
+#### Buscar Pokémon por ID
+
+``` http
+GET /pokemons/:id
+```
+
+#### Atualizar Pokémon
+
+``` http
+PATCH /pokemons/:id
+```
+
+Body:
+
+``` json
+{
+  "name": "Raichu",
+  "level": 22,
+  "hp": 60
+}
+```
+
+#### Excluir Pokémon
+
+``` http
+DELETE /pokemons/:id
+```
+
+------------------------------------------------------------------------
+
+## Regra de autorização
+
+Todos os usuários autenticados podem visualizar os Pokémons cadastrados.
+
+Porém:
+
+-   apenas o usuário que criou o Pokémon pode atualizá-lo
+-   apenas o usuário que criou o Pokémon pode excluí-lo
+
+Caso outro usuário tente editar ou excluir um Pokémon que não criou, a
+API retornará:
+
+    403 Forbidden
+
+------------------------------------------------------------------------
+
+## Validações
+
+A aplicação possui validação global com `ValidationPipe`, incluindo:
+
+-   remoção de campos não permitidos
+-   bloqueio de campos extras
+-   validação de tipos
+-   validação de valores mínimos e máximos
+
+------------------------------------------------------------------------
+
+## Estrutura do projeto
+
+    src/
+    ├── auth/
+    ├── users/
+    ├── pokemons/
+    ├── app.module.ts
+    └── main.ts
+
+------------------------------------------------------------------------
+
+## Scripts úteis
+
+``` bash
+npm run start
+npm run start:dev
+npm run build
+npm run lint
+```
+
+------------------------------------------------------------------------
+
+## Observações
+
+Este projeto foi desenvolvido como parte de um desafio técnico, com foco
+em:
+
+-   organização de código
+-   autenticação e autorização
+-   boas práticas com NestJS
+-   clareza no histórico de commits
+-   estrutura escalável para evolução futura
