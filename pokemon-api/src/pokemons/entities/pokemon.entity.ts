@@ -29,6 +29,9 @@ export class Pokemon {
   @Column({ name: 'pokedex_number', type: 'int' })
   pokedexNumber: number;
 
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl: string;
+
   @Column({ name: 'created_by' })
   createdById: string;
 

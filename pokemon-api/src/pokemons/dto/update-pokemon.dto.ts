@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Max,
   Min,
 } from 'class-validator';
@@ -37,4 +38,8 @@ export class UpdatePokemonDto {
   @IsInt()
   @Min(1)
   pokedexNumber?: number;
+
+  @IsOptional()
+  @IsUrl()
+  imageUrl?: string;
 }

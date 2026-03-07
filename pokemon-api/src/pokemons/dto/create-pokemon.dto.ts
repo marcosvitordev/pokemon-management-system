@@ -1,6 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreatePokemonDto {
   @ApiProperty()
@@ -31,4 +39,9 @@ export class CreatePokemonDto {
   @IsInt()
   @Min(1)
   pokedexNumber: number;
+
+  @ApiProperty({ required: false, example: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png' })
+  @IsOptional()
+  @IsUrl()
+  imageUrl?: string;
 }

@@ -24,6 +24,7 @@ export class PokemonsService {
       level: pokemon.level,
       hp: pokemon.hp,
       pokedexNumber: pokemon.pokedexNumber,
+      imageUrl: pokemon.imageUrl,
       createdAt: pokemon.createdAt,
       updatedAt: pokemon.updatedAt,
       createdBy: pokemon.createdBy
