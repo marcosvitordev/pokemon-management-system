@@ -16,6 +16,10 @@ export class PokemonsService {
     private readonly pokemonsRepository: Repository<Pokemon>,
   ) {}
 
+  private getDefaultPokemonImageUrl(pokedexNumber: number): string {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokedexNumber}.png`;
+  }
+
   private formatPokemon(pokemon: Pokemon) {
     return {
       id: pokemon.id,
@@ -38,8 +42,13 @@ export class PokemonsService {
   }
 
   async create(createPokemonDto: CreatePokemonDto, userId: string) {
+    const imageUrl =
+      createPokemonDto.imageUrl ||
+      this.getDefaultPokemonImageUrl(createPokemonDto.pokedexNumber);
+
     const pokemon = this.pokemonsRepository.create({
       ...createPokemonDto,
+      imageUrl,
       createdById: userId,
     });
 
@@ -101,7 +110,16 @@ export class PokemonsService {
       );
     }
 
-    Object.assign(pokemon, updatePokemonDto);
+    const finalImageUrl =
+      updatePokemonDto.imageUrl ||
+      (updatePokemonDto.pokedexNumber
+        ? this.getDefaultPokemonImageUrl(updatePokemonDto.pokedexNumber)
+        : pokemon.imageUrl);
+
+    Object.assign(pokemon, {
+      ...updatePokemonDto,
+      imageUrl: finalImageUrl,
+    });
 
     await this.pokemonsRepository.save(pokemon);
 
