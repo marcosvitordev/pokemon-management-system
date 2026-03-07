@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -44,5 +45,13 @@ export class PokemonsController {
     @CurrentUser() user: CurrentUserType,
   ) {
     return this.pokemonsService.update(id, updatePokemonDto, user.userId);
+  }
+
+  @Delete(':id')
+  remove(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserType,
+  ) {
+    return this.pokemonsService.remove(id, user.userId);
   }
 }

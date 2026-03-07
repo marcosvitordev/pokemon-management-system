@@ -106,4 +106,26 @@ export class PokemonsService {
       pokemon: updatedPokemon,
     };
   }
+
+  async remove(id: string, userId: string) {
+    const pokemon = await this.pokemonsRepository.findOne({
+      where: { id },
+    });
+
+    if (!pokemon) {
+      throw new NotFoundException('Pokemon not found');
+    }
+
+    if (pokemon.createdById !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this pokemon',
+      );
+    }
+
+    await this.pokemonsRepository.remove(pokemon);
+
+    return {
+      message: 'Pokemon deleted successfully',
+    };
+  }
 }
