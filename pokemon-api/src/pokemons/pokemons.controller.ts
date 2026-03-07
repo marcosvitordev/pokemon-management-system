@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PokemonsService } from './pokemons.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -15,6 +16,8 @@ import type { CurrentUserType } from '../auth/types/current-user.type';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 
+@ApiTags('Pokemons')
+@ApiBearerAuth('Bearer')
 @Controller('pokemons')
 @UseGuards(JwtAuthGuard)
 export class PokemonsController {

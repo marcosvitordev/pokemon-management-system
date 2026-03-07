@@ -48,7 +48,7 @@ Antes de começar, você precisa ter instalado:
 Clone o repositório:
 
 ``` bash
-git clone <url-do-repositorio>
+git clone https://github.com/marcosvitordev/pokemon-management-system.git
 ```
 
 Entre na pasta do projeto:

@@ -18,11 +18,20 @@ async function bootstrap() {
     .setTitle('Pokemon API')
     .setDescription('API REST para gerenciamento de Pokemons com autenticação JWT')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+        name: 'Authorization',
+        description: 'Informe o token JWT',
+      },
+      'Bearer',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
