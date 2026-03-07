@@ -1,0 +1,4 @@
+# compiled output
+/pokemon-api/dist
+/pokemon-api/node_modules
+/pokemon-api/build
