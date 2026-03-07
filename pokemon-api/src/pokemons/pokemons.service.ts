@@ -16,6 +16,26 @@ export class PokemonsService {
     private readonly pokemonsRepository: Repository<Pokemon>,
   ) {}
 
+  private formatPokemon(pokemon: Pokemon) {
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      type: pokemon.type,
+      level: pokemon.level,
+      hp: pokemon.hp,
+      pokedexNumber: pokemon.pokedexNumber,
+      createdAt: pokemon.createdAt,
+      updatedAt: pokemon.updatedAt,
+      createdBy: pokemon.createdBy
+        ? {
+            id: pokemon.createdBy.id,
+            name: pokemon.createdBy.name,
+            email: pokemon.createdBy.email,
+          }
+        : undefined,
+    };
+  }
+
   async create(createPokemonDto: CreatePokemonDto, userId: string) {
     const pokemon = this.pokemonsRepository.create({
       ...createPokemonDto,
@@ -24,9 +44,14 @@ export class PokemonsService {
 
     const savedPokemon = await this.pokemonsRepository.save(pokemon);
 
+    const createdPokemon = await this.pokemonsRepository.findOne({
+      where: { id: savedPokemon.id },
+      relations: ['createdBy'],
+    });
+
     return {
       message: 'Pokemon created successfully',
-      pokemon: savedPokemon,
+      pokemon: this.formatPokemon(createdPokemon as Pokemon),
     };
   }
 
@@ -38,21 +63,10 @@ export class PokemonsService {
       relations: ['createdBy'],
     });
 
-    return pokemons.map((pokemon) => ({
-      id: pokemon.id,
-      name: pokemon.name,
-      type: pokemon.type,
-      level: pokemon.level,
-      hp: pokemon.hp,
-      pokedexNumber: pokemon.pokedexNumber,
-      createdAt: pokemon.createdAt,
-      updatedAt: pokemon.updatedAt,
-      createdBy: {
-        id: pokemon.createdBy?.id,
-        name: pokemon.createdBy?.name,
-        email: pokemon.createdBy?.email,
-      },
-    }));
+    return {
+      message: 'Pokemons retrieved successfully',
+      data: pokemons.map((pokemon) => this.formatPokemon(pokemon)),
+    };
   }
 
   async findOne(id: string) {
@@ -66,19 +80,8 @@ export class PokemonsService {
     }
 
     return {
-      id: pokemon.id,
-      name: pokemon.name,
-      type: pokemon.type,
-      level: pokemon.level,
-      hp: pokemon.hp,
-      pokedexNumber: pokemon.pokedexNumber,
-      createdAt: pokemon.createdAt,
-      updatedAt: pokemon.updatedAt,
-      createdBy: {
-        id: pokemon.createdBy?.id,
-        name: pokemon.createdBy?.name,
-        email: pokemon.createdBy?.email,
-      },
+      message: 'Pokemon retrieved successfully',
+      pokemon: this.formatPokemon(pokemon),
     };
   }
 
@@ -99,11 +102,16 @@ export class PokemonsService {
 
     Object.assign(pokemon, updatePokemonDto);
 
-    const updatedPokemon = await this.pokemonsRepository.save(pokemon);
+    await this.pokemonsRepository.save(pokemon);
+
+    const updatedPokemon = await this.pokemonsRepository.findOne({
+      where: { id },
+      relations: ['createdBy'],
+    });
 
     return {
       message: 'Pokemon updated successfully',
-      pokemon: updatedPokemon,
+      pokemon: this.formatPokemon(updatedPokemon as Pokemon),
     };
   }
 
