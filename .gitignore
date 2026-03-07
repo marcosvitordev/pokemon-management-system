@@ -2,3 +2,10 @@
 /pokemon-api/dist
 /pokemon-api/node_modules
 /pokemon-api/build
+
+# local env files
+/pokemon-api/.env
+/pokemon-api/.env.local
+/pokemon-api/.env.development
+/pokemon-api/.env.production
+/pokemon-api/.env.test
