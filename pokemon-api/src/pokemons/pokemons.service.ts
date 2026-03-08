@@ -4,10 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository, FindOptionsWhere } from 'typeorm';
 import { Pokemon } from './entities/pokemon.entity';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { QueryPokemonDto } from './dto/query-pokemon.dto';
 
 @Injectable()
 export class PokemonsService {
@@ -65,17 +66,44 @@ export class PokemonsService {
     };
   }
 
-  async findAll() {
-    const pokemons = await this.pokemonsRepository.find({
+  async findAll(query: QueryPokemonDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    const where: FindOptionsWhere<Pokemon> = {};
+
+    if (query.name) {
+      where.name = ILike(`%${query.name}%`);
+    }
+
+    if (query.type) {
+      where.type = ILike(`%${query.type}%`);
+    }
+
+    const [pokemons, total] = await this.pokemonsRepository.findAndCount({
+      where,
       order: {
         createdAt: 'DESC',
       },
       relations: ['createdBy'],
+      skip,
+      take: limit,
     });
 
     return {
       message: 'Pokemons retrieved successfully',
       data: pokemons.map((pokemon) => this.formatPokemon(pokemon)),
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+      filters: {
+        name: query.name ?? null,
+        type: query.type ?? null,
+      },
     };
   }
 

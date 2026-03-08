@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { CurrentUserType } from '../auth/types/current-user.type';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { QueryPokemonDto } from './dto/query-pokemon.dto';
 
 @ApiTags('Pokemons')
 @ApiBearerAuth('Bearer')
@@ -32,8 +34,8 @@ export class PokemonsController {
   }
 
   @Get()
-  findAll() {
-    return this.pokemonsService.findAll();
+  findAll(@Query() query: QueryPokemonDto) {
+    return this.pokemonsService.findAll(query);
   }
 
   @Get(':id')
