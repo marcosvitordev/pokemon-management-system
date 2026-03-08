@@ -94,8 +94,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
-  // Agora guardamos os dados completos do utilizador
-  const [currentUser, setCurrentUser] = useState<{ id: string; name?: string; email?: string } | null>(null);
+  // ADICIONADO: avatarUrl na tipagem
+  const [currentUser, setCurrentUser] = useState<{ id: string; name?: string; email?: string; avatarUrl?: string } | null>(null);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -139,13 +139,29 @@ export default function Home() {
     try {
       const payloadBase64 = token.split('.')[1];
       const decodedPayload = JSON.parse(atob(payloadBase64));
+      const userId = decodedPayload.sub || decodedPayload.userId || decodedPayload.id;
       
-      // Armazena o ID e, se existirem no payload JWT, o nome e email
+      // Armazena dados iniciais rápidos do token
       setCurrentUser({
-        id: decodedPayload.sub || decodedPayload.userId || decodedPayload.id,
+        id: userId,
         name: decodedPayload.name,
         email: decodedPayload.email,
       });
+
+      // ADICIONADO: Busca os dados completos do usuário (incluindo o avatar salvo) na API
+      api.get('/users/me')
+        .then((res) => {
+          if (res.data?.user) {
+            setCurrentUser({
+              id: res.data.user.id,
+              name: res.data.user.name,
+              email: res.data.user.email,
+              avatarUrl: res.data.user.avatarUrl,
+            });
+          }
+        })
+        .catch((err) => console.error('Erro ao buscar perfil atualizado', err));
+
     } catch (e) {
       console.error('Erro ao descodificar o token', e);
     }
@@ -211,11 +227,11 @@ export default function Home() {
                     <p className="text-xs text-red-100">{currentUser.email || 'Mestre em treinamento'}</p>
                   </div>
                   <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-white/50 bg-white/20 shadow-md">
-                    {/* Gerador de avatar dinâmico baseado no ID do usuário */}
+                    {/* ADICIONADO: Fallback para mostrar a imagem do banco de dados ou a gerada padrão */}
                     <img
-                      src={currentUser.avatarUrl}
+                      src={currentUser.avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${currentUser.id}`}
                       alt="Avatar do Treinador"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover bg-white"
                     />
                   </div>
                 </Link>
@@ -340,7 +356,6 @@ export default function Home() {
           <>
             <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
               {pokemons.map((pokemon) => {
-                // Atualizado para usar o currentUser.id
                 const isOwner = currentUser?.id && pokemon.createdBy?.id === currentUser.id;
                 const typeGradient = getTypeColor(pokemon.type);
 
