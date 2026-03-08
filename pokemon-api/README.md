@@ -3,22 +3,30 @@
 API RESTful desenvolvida com **NestJS**, **TypeScript** e **PostgreSQL**
 para autenticação de usuários e gerenciamento de Pokémons.
 
-## Funcionalidades
+A API permite que usuários criem, visualizem, atualizem e removam
+Pokémons, respeitando regras de autorização baseadas no usuário
+autenticado.
+
+------------------------------------------------------------------------
+
+# Funcionalidades
 
 -   Cadastro de usuário
--   Login com JWT
--   Rota protegida para dados do usuário autenticado
+-   Login com autenticação JWT
+-   Rota protegida para usuário autenticado
 -   Criar Pokémon
 -   Listar Pokémons
 -   Buscar Pokémon por ID
 -   Atualizar Pokémon
 -   Excluir Pokémon
--   Regra de autorização: apenas o criador do Pokémon pode editar ou
-    excluir
+-   Regra de autorização por proprietário
+-   Campo de **imagem do Pokémon**
+-   **Geração automática da imagem via PokéAPI**
+-   Documentação automática com **Swagger**
 
 ------------------------------------------------------------------------
 
-## Tecnologias utilizadas
+# Tecnologias utilizadas
 
 -   Node.js
 -   NestJS
@@ -29,13 +37,13 @@ para autenticação de usuários e gerenciamento de Pokémons.
 -   Passport
 -   Bcrypt
 -   Class Validator
--   Class Transformer
+-   Swagger
 
 ------------------------------------------------------------------------
 
-## Requisitos
+# Requisitos
 
-Antes de começar, você precisa ter instalado:
+Antes de rodar o projeto, instale:
 
 -   Node.js
 -   npm
@@ -43,7 +51,7 @@ Antes de começar, você precisa ter instalado:
 
 ------------------------------------------------------------------------
 
-## Instalação
+# Instalação
 
 Clone o repositório:
 
@@ -65,9 +73,9 @@ npm install
 
 ------------------------------------------------------------------------
 
-## Configuração do ambiente
+# Configuração do ambiente
 
-Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+Crie um arquivo `.env` na raiz do projeto:
 
 ``` env
 PORT=3000
@@ -84,7 +92,7 @@ JWT_EXPIRES_IN=1d
 
 ------------------------------------------------------------------------
 
-## Banco de dados
+# Banco de dados
 
 Crie o banco no PostgreSQL:
 
@@ -94,7 +102,7 @@ CREATE DATABASE pokemon_api;
 
 ------------------------------------------------------------------------
 
-## Executando o projeto
+# Executando o projeto
 
 Modo desenvolvimento:
 
@@ -108,27 +116,40 @@ A aplicação estará disponível em:
 
 ------------------------------------------------------------------------
 
-## Autenticação
+# Documentação da API (Swagger)
 
-A API utiliza autenticação via **JWT**.
+Após iniciar o projeto, acesse:
 
-Após realizar login, envie o token no header das rotas protegidas:
+    http://localhost:3000/api
 
-``` http
-Authorization: Bearer SEU_TOKEN
-```
+No Swagger é possível:
+
+-   visualizar todos os endpoints
+-   testar requisições
+-   autenticar usando JWT
+-   enviar dados diretamente pela interface
 
 ------------------------------------------------------------------------
 
-## Endpoints
+# Autenticação
 
-### Auth
+A API utiliza **JWT (JSON Web Token)**.
 
-#### Registrar usuário
+Após realizar login, envie o token no header:
 
-``` http
-POST /auth/register
-```
+    Authorization: Bearer SEU_TOKEN
+
+No Swagger basta clicar em **Authorize** e inserir o token.
+
+------------------------------------------------------------------------
+
+# Endpoints
+
+## Auth
+
+### Registrar usuário
+
+    POST /auth/register
 
 Body:
 
@@ -140,11 +161,11 @@ Body:
 }
 ```
 
-#### Login
+------------------------------------------------------------------------
 
-``` http
-POST /auth/login
-```
+### Login
+
+    POST /auth/login
 
 Body:
 
@@ -155,37 +176,33 @@ Body:
 }
 ```
 
-------------------------------------------------------------------------
+Resposta:
 
-### Users
-
-#### Usuário autenticado
-
-``` http
-GET /users/me
-```
-
-Header:
-
-``` http
-Authorization: Bearer SEU_TOKEN
+``` json
+{
+  "access_token": "JWT_TOKEN"
+}
 ```
 
 ------------------------------------------------------------------------
 
-### Pokemons
+# Users
 
-#### Criar Pokémon
+### Usuário autenticado
 
-``` http
-POST /pokemons
-```
+    GET /users/me
 
 Header:
 
-``` http
-Authorization: Bearer SEU_TOKEN
-```
+    Authorization: Bearer TOKEN
+
+------------------------------------------------------------------------
+
+# Pokemons
+
+## Criar Pokémon
+
+    POST /pokemons
 
 Body:
 
@@ -199,98 +216,131 @@ Body:
 }
 ```
 
-#### Listar Pokémons
-
-``` http
-GET /pokemons
-```
-
-#### Buscar Pokémon por ID
-
-``` http
-GET /pokemons/:id
-```
-
-#### Atualizar Pokémon
-
-``` http
-PATCH /pokemons/:id
-```
-
-Body:
+Resposta:
 
 ``` json
 {
-  "name": "Raichu",
-  "level": 22,
-  "hp": 60
+  "message": "Pokemon created successfully",
+  "pokemon": {
+    "name": "Pikachu",
+    "type": "Electric",
+    "level": 10,
+    "hp": 35,
+    "pokedexNumber": 25,
+    "imageUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+  }
 }
-```
-
-#### Excluir Pokémon
-
-``` http
-DELETE /pokemons/:id
 ```
 
 ------------------------------------------------------------------------
 
-## Regra de autorização
+# Imagem automática do Pokémon
 
-Todos os usuários autenticados podem visualizar os Pokémons cadastrados.
+Se **imageUrl não for enviada**, a API gera automaticamente a imagem
+usando a PokéAPI.
+
+Exemplo:
+
+``` json
+{
+  "pokedexNumber": 25
+}
+```
+
+Imagem gerada:
+
+    https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png
+
+------------------------------------------------------------------------
+
+# Listar Pokémons
+
+    GET /pokemons
+
+------------------------------------------------------------------------
+
+# Buscar Pokémon por ID
+
+    GET /pokemons/:id
+
+------------------------------------------------------------------------
+
+# Atualizar Pokémon
+
+    PATCH /pokemons/:id
+
+Exemplo:
+
+``` json
+{
+  "name": "Raichu",
+  "level": 22
+}
+```
+
+------------------------------------------------------------------------
+
+# Excluir Pokémon
+
+    DELETE /pokemons/:id
+
+------------------------------------------------------------------------
+
+# Regra de autorização
+
+Todos os usuários autenticados podem **visualizar Pokémons**.
 
 Porém:
 
--   apenas o usuário que criou o Pokémon pode atualizá-lo
--   apenas o usuário que criou o Pokémon pode excluí-lo
+-   apenas o **usuário que criou** pode atualizar
+-   apenas o **usuário que criou** pode excluir
 
-Caso outro usuário tente editar ou excluir um Pokémon que não criou, a
-API retornará:
+Caso outro usuário tente modificar:
 
     403 Forbidden
 
 ------------------------------------------------------------------------
 
-## Validações
+# Estrutura do projeto
 
-A aplicação possui validação global com `ValidationPipe`, incluindo:
-
--   remoção de campos não permitidos
--   bloqueio de campos extras
--   validação de tipos
--   validação de valores mínimos e máximos
-
-------------------------------------------------------------------------
-
-## Estrutura do projeto
-
-    src/
-    ├── auth/
-    ├── users/
-    ├── pokemons/
-    ├── app.module.ts
-    └── main.ts
+    src
+     ├── auth
+     ├── users
+     ├── pokemons
+     ├── app.module.ts
+     └── main.ts
 
 ------------------------------------------------------------------------
 
-## Scripts úteis
+# Scripts úteis
+
+Rodar projeto:
 
 ``` bash
 npm run start
+```
+
+Modo desenvolvimento:
+
+``` bash
 npm run start:dev
+```
+
+Build:
+
+``` bash
 npm run build
-npm run lint
 ```
 
 ------------------------------------------------------------------------
 
-## Observações
+# Observações
 
-Este projeto foi desenvolvido como parte de um desafio técnico, com foco
+Este projeto foi desenvolvido como parte de um desafio técnico com foco
 em:
 
--   organização de código
--   autenticação e autorização
 -   boas práticas com NestJS
--   clareza no histórico de commits
--   estrutura escalável para evolução futura
+-   organização de código
+-   autenticação segura
+-   controle de autorização
+-   documentação clara da API
