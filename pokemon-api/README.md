@@ -3,8 +3,8 @@
 API RESTful desenvolvida com **NestJS**, **TypeScript** e **PostgreSQL**
 para autenticação de usuários e gerenciamento de Pokémons.
 
-A API permite que usuários criem, visualizem, atualizem e removam
-Pokémons, respeitando regras de autorização baseadas no usuário
+A API permite que usuários criem, visualizem, filtrem, atualizem e
+removam Pokémons, respeitando regras de autorização baseadas no usuário
 autenticado.
 
 ------------------------------------------------------------------------
@@ -22,6 +22,8 @@ autenticado.
 -   Regra de autorização por proprietário
 -   Campo de **imagem do Pokémon**
 -   **Geração automática da imagem via PokéAPI**
+-   **Paginação**
+-   **Filtros por nome e tipo**
 -   Documentação automática com **Swagger**
 
 ------------------------------------------------------------------------
@@ -247,7 +249,7 @@ Exemplo:
 }
 ```
 
-Imagem gerada:
+Imagem gerada automaticamente:
 
     https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png
 
@@ -256,6 +258,49 @@ Imagem gerada:
 # Listar Pokémons
 
     GET /pokemons
+
+Suporta **paginação e filtros**.
+
+## Paginação
+
+    GET /pokemons?page=1&limit=10
+
+## Filtro por nome
+
+    GET /pokemons?name=pika
+
+## Filtro por tipo
+
+    GET /pokemons?type=Electric
+
+## Combinar filtros
+
+    GET /pokemons?page=1&limit=10&name=pika&type=Electric
+
+### Exemplo de resposta
+
+``` json
+{
+  "message": "Pokemons retrieved successfully",
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Pikachu",
+      "type": "Electric",
+      "level": 10,
+      "hp": 35,
+      "pokedexNumber": 25,
+      "imageUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "totalPages": 1
+  }
+}
+```
 
 ------------------------------------------------------------------------
 
@@ -332,6 +377,12 @@ Build:
 npm run build
 ```
 
+Lint:
+
+``` bash
+npm run lint
+```
+
 ------------------------------------------------------------------------
 
 # Observações
@@ -343,4 +394,5 @@ em:
 -   organização de código
 -   autenticação segura
 -   controle de autorização
+-   paginação e filtros de API
 -   documentação clara da API
