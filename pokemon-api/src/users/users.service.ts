@@ -18,10 +18,19 @@ export class UsersService {
     });
   }
 
+  // async create(data: {
+  //   name: string;
+  //   email: string;
+  //   passwordHash: string;
+  // }): Promise<User> {
+  //   const user = this.usersRepository.create(data);
+  //   return this.usersRepository.save(user);
+  // }
   async create(data: {
     name: string;
     email: string;
     passwordHash: string;
+    avatarUrl?: string;
   }): Promise<User> {
     const user = this.usersRepository.create(data);
     return this.usersRepository.save(user);

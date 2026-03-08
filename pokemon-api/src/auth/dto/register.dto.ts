@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+// src/auth/dto/register.dto.ts
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterDto {
   @IsString()
@@ -12,4 +13,9 @@ export class RegisterDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  // Novo campo opcional para a imagem de perfil
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }

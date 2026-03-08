@@ -25,6 +25,7 @@ export class AuthService {
       name: registerDto.name,
       email: registerDto.email,
       passwordHash,
+      avatarUrl: registerDto.avatarUrl,
     });
 
     return {
