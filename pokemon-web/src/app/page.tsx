@@ -205,7 +205,7 @@ export default function Home() {
               
               {/* --- PERFIL DO USUÁRIO --- */}
               {currentUser && (
-                <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-2 backdrop-blur-sm border border-white/20 shadow-inner">
+                <Link href="/profile" className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-2 backdrop-blur-sm border border-white/20 shadow-inner hover:bg-white/20 transition cursor-pointer">
                   <div className="text-right hidden sm:block">
                     <p className="text-sm font-bold text-white">{currentUser.name || 'Treinador Pokémon'}</p>
                     <p className="text-xs text-red-100">{currentUser.email || 'Mestre em treinamento'}</p>
@@ -213,12 +213,12 @@ export default function Home() {
                   <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-white/50 bg-white/20 shadow-md">
                     {/* Gerador de avatar dinâmico baseado no ID do usuário */}
                     <img
-                      src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${currentUser.id}`}
+                      src={currentUser.avatarUrl}
                       alt="Avatar do Treinador"
                       className="h-full w-full object-cover"
                     />
                   </div>
-                </div>
+                </Link>
               )}
 
               <div className="flex flex-wrap gap-3">
