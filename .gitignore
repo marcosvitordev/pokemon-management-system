@@ -9,3 +9,17 @@
 /pokemon-api/.env.development
 /pokemon-api/.env.production
 /pokemon-api/.env.test
+
+
+#front
+/pokemon-web/node_modules
+/pokemon-web/dist
+/pokemon-web/build
+/pokemon-web/.next
+
+# local env files
+/pokemon-web/.env
+/pokemon-web/.env.local
+/pokemon-web/.env.development
+/pokemon-web/.env.production
+/pokemon-web/.env.test
