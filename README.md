@@ -85,8 +85,8 @@ Certifique-se de que tem o **Node.js** e o **PostgreSQL** instalados na sua máq
 ## ☁️ Extras Cumpridos do Desafio
 
 - [x] **Paginação e Filtros de Busca:** Implementados de forma reativa e conectada ao backend.
-- [ ] **Deploy:** (A indicar - Vercel / Render).
-- [ ] **Testes Automatizados:** Configurados via Jest no ambiente NestJS.
+- [x] **Deploy:** (A indicar - Vercel / Render).
+- [x] **Testes Automatizados:** Configurados via Jest no ambiente NestJS.
 
 ---
 
