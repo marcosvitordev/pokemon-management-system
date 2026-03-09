@@ -650,7 +650,7 @@ export default function Home() {
             <img 
               src={selectedImage} 
               alt="Pokémon Ampliado" 
-              className="max-h-[98vh] max-w-[98vw] w-auto animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-[0_10px_35px_rgba(255,255,255,0.2)]"
+              className="w-100 h-100 animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-[0_10px_35px_rgba(255,255,255,0.2)]"
               onClick={(e) => e.stopPropagation()} // Previne que feche ao clicar na própria imagem
             />
           </div>
