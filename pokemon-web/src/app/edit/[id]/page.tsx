@@ -6,7 +6,6 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 
-// Lista de tipos oficiais de Pokémon (A mesma usada na página de Create)
 const POKEMON_TYPES = [
   'Normal', 'Fogo', 'Água', 'Grama', 'Elétrico', 'Gelo',
   'Lutador', 'Veneno', 'Terra', 'Voador', 'Psíquico', 'Inseto',
@@ -53,7 +52,6 @@ export default function EditPokemonPage() {
           pokedexNumber: pkmn.pokedexNumber,
         });
         
-        // Guarda a imagem para podermos exibi-la na edição
         if (pkmn.imageUrl) {
           setPokemonImageUrl(pkmn.imageUrl);
         }
@@ -108,7 +106,7 @@ export default function EditPokemonPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-red-50 to-amber-50">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-red-50 to-amber-50 p-4">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-red-200 border-t-red-600" />
           <p className="text-lg font-semibold text-slate-700">A carregar dados do Pokémon...</p>
@@ -118,18 +116,18 @@ export default function EditPokemonPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-red-50 to-amber-50 p-4">
-      <div className="my-8 w-full max-w-2xl rounded-3xl border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 via-red-50 to-amber-50 p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-2xl rounded-3xl border border-white/60 bg-white/80 p-6 shadow-xl backdrop-blur sm:p-10">
         
-        <div className="mb-8 flex items-center justify-between border-b border-slate-200 pb-6">
-          <div className="flex items-center gap-6">
-            {/* Exibe a imagem do Pokémon se ela já existir na API */}
+        {/* Cabeçalho responsivo: stack em mobile, row em telas maiores */}
+        <div className="mb-8 flex flex-col items-center justify-between gap-6 border-b border-slate-200 pb-6 sm:flex-row sm:gap-4">
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
             {pokemonImageUrl ? (
-              <div className="h-24 w-24 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center">
-                <img src={pokemonImageUrl} alt={formData.name} className="h-16 w-16 object-contain drop-shadow-md" />
+              <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full border-4 border-white bg-slate-100 shadow-md sm:h-24 sm:w-24">
+                <img src={pokemonImageUrl} alt={formData.name} className="h-14 w-14 object-contain drop-shadow-md sm:h-16 sm:w-16" />
               </div>
             ) : (
-              <div className="h-24 w-24 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center text-4xl">
+              <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full border-4 border-white bg-slate-100 text-3xl shadow-md sm:h-24 sm:w-24 sm:text-4xl">
                 ⚪
               </div>
             )}
@@ -137,11 +135,11 @@ export default function EditPokemonPage() {
               <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-blue-500">
                 Pokédex #{formData.pokedexNumber || '?'}
               </p>
-              <h2 className="text-3xl font-black text-slate-800">Editar Pokémon</h2>
+              <h2 className="text-2xl font-black text-slate-800 sm:text-3xl">Editar Pokémon</h2>
             </div>
           </div>
           
-          <Link href="/" className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-slate-500 shadow-sm transition hover:text-red-600 hover:shadow">
+          <Link href="/" className="w-full rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-slate-500 shadow-sm transition hover:text-red-600 hover:shadow sm:w-auto sm:px-4 sm:py-2">
             Cancelar
           </Link>
         </div>
@@ -153,9 +151,9 @@ export default function EditPokemonPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-semibold text-slate-700">Nome do Pokémon</label>
               <input 
                 type="text" name="name" required
@@ -164,16 +162,16 @@ export default function EditPokemonPage() {
               />
             </div>
 
-            {/* SELEÇÃO CLICÁVEL DE TIPOS */}
-            <div className="md:col-span-2">
+            {/* SELEÇÃO CLICÁVEL DE TIPOS COM GRID RESPONSIVO */}
+            <div className="sm:col-span-2">
               <label className="mb-3 block text-sm font-semibold text-slate-700">Tipo principal</label>
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+              <div className="grid grid-cols-2 gap-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
                 {POKEMON_TYPES.map((type) => (
                   <button
                     key={type}
                     type="button"
                     onClick={() => handleTypeSelect(type)}
-                    className={`rounded-xl border py-2 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                    className={`rounded-xl border py-2 px-1 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                       formData.type === type
                         ? 'border-blue-500 bg-blue-50 text-blue-600 shadow-md scale-105'
                         : 'border-slate-200 bg-white text-slate-500 hover:border-blue-300 hover:bg-slate-50'
@@ -203,7 +201,7 @@ export default function EditPokemonPage() {
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-semibold text-slate-700">HP (Pontos de Vida)</label>
               <input 
                 type="number" name="hp" min="1" required
