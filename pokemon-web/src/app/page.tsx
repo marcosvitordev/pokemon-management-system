@@ -22,6 +22,13 @@ interface Pokemon {
   };
 }
 
+// Lista de tipos oficiais de Pokémon
+const POKEMON_TYPES = [
+  'Normal', 'Fogo', 'Água', 'Grama', 'Elétrico', 'Gelo',
+  'Lutador', 'Veneno', 'Terra', 'Voador', 'Psíquico', 'Inseto',
+  'Pedra', 'Fantasma', 'Dragão', 'Sombrio', 'Aço', 'Fada'
+];
+
 function getTypeColor(type: string) {
   const normalized = type.toLowerCase();
 
@@ -108,8 +115,9 @@ export default function Home() {
   const [searchType, setSearchType] = useState("");
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const [pokemonToDelete, setPokemonToDelete] = useState<Pokemon | null>(null);
 
   const fetchPokemons = useCallback(async () => {
     setLoading(true);
@@ -183,24 +191,37 @@ export default function Home() {
     router.push("/login");
   };
 
-  const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Tem a certeza que deseja apagar este Pokémon?",
-    );
-    if (!confirmDelete) return;
+  const confirmDelete = (pokemon: Pokemon) => {
+    setPokemonToDelete(pokemon);
+  };
+
+  const executeDelete = async () => {
+    if (!pokemonToDelete) return;
 
     try {
-      await api.delete(`/pokemons/${id}`);
+      await api.delete(`/pokemons/${pokemonToDelete.id}`);
+      setPokemonToDelete(null);
       fetchPokemons();
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || "Erro ao apagar o Pokémon.");
+      setPokemonToDelete(null);
     }
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
+    // Nota: o fetchPokemons é chamado automaticamente porque 'page' ou dependências mudam
+  };
+
+  // ADICIONADO: Função para lidar com o clique no filtro de tipo
+  const handleTypeFilterToggle = (type: string) => {
+    if (searchType === type) {
+      setSearchType(""); // Se clicar no que já está selecionado, limpa o filtro
+    } else {
+      setSearchType(type); // Seleciona o novo tipo
+    }
   };
 
   const clearFilters = () => {
@@ -305,15 +326,16 @@ export default function Home() {
               Filtros de pesquisa
             </h2>
             <p className="text-sm text-slate-500">
-              Encontre Pokémons pelo nome ou tipo.
+              Encontre Pokémons pelo nome ou clique em um tipo para filtrar.
             </p>
           </div>
 
+          {/* Pesquisa por Nome e Botões de Ação */}
           <form
             onSubmit={handleSearch}
-            className="grid gap-4 md:grid-cols-[1fr_1fr_auto_auto]"
+            className="flex flex-col gap-4 sm:flex-row sm:items-end mb-6"
           >
-            <div>
+            <div className="flex-1">
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Buscar por nome
               </label>
@@ -326,36 +348,48 @@ export default function Home() {
               />
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Buscar por tipo
-              </label>
-              <input
-                type="text"
-                value={searchType}
-                onChange={(e) => setSearchType(e.target.value)}
-                placeholder="Ex: Fogo, Água"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-red-400 focus:bg-white focus:ring-4 focus:ring-red-100"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="h-[50px] self-end rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 font-bold text-white shadow-md transition hover:scale-[1.02] hover:shadow-lg"
-            >
-              Filtrar
-            </button>
-
-            {(searchName || searchType) && (
+            <div className="flex gap-2">
               <button
-                type="button"
-                onClick={clearFilters}
-                className="h-[50px] self-end rounded-2xl border border-slate-200 bg-slate-100 px-6 font-bold text-slate-700 transition hover:bg-slate-200"
+                type="submit"
+                className="h-[50px] rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 font-bold text-white shadow-md transition hover:scale-[1.02] hover:shadow-lg"
               >
-                Limpar
+                Buscar
               </button>
-            )}
+
+              {(searchName || searchType) && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="h-[50px] rounded-2xl border border-slate-200 bg-slate-100 px-6 font-bold text-slate-700 transition hover:bg-slate-200"
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
           </form>
+
+          {/* ADICIONADO: Lista de Filtros de Tipo Clicáveis */}
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-slate-700">
+              Filtrar por Tipo:
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {POKEMON_TYPES.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => handleTypeFilterToggle(type)}
+                  className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider transition-all duration-200 border ${
+                    searchType === type
+                      ? 'border-blue-500 bg-blue-500 text-white shadow-md scale-105'
+                      : 'border-slate-200 bg-white text-slate-500 hover:border-blue-300 hover:bg-slate-50'
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         {error && (
@@ -492,7 +526,7 @@ export default function Home() {
                               Editar
                             </Link>
                             <button
-                              onClick={() => handleDelete(pokemon.id)}
+                              onClick={() => confirmDelete(pokemon)}
                               className="flex-1 rounded-2xl bg-red-600 px-6 py-2 text-sm font-bold text-white transition hover:bg-red-700"
                             >
                               Apagar
@@ -588,7 +622,7 @@ export default function Home() {
                             Editar
                           </Link>
                           <button
-                            onClick={() => handleDelete(pokemon.id)}
+                            onClick={() => confirmDelete(pokemon)}
                             className="rounded-2xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700"
                           >
                             Apagar
@@ -631,28 +665,61 @@ export default function Home() {
         )}
       </div>
 
-      {/* MODAL DE IMAGEM (LIGHTBOX) AMPLIADO */}
       {selectedImage && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-2 sm:p-4 backdrop-blur-md transition-all duration-300"
           onClick={() => setSelectedImage(null)}
         >
           <div className="relative flex h-full w-full flex-col items-center justify-center">
-            {/* Botão Fechar ajustado */}
             <button 
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 z-50 text-6xl text-white opacity-70 transition hover:text-red-500 hover:opacity-100"
             >
               &times;
             </button>
-            
-            {/* Imagem agora ocupa quase toda a tela com sombra reforçada */}
             <img 
               src={selectedImage} 
               alt="Pokémon Ampliado" 
-              className="w-100 h-100 animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-[0_10px_35px_rgba(255,255,255,0.2)]"
-              onClick={(e) => e.stopPropagation()} // Previne que feche ao clicar na própria imagem
+              className="w-100 h-100 max-h-[98vh] max-w-[98vw] animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-[0_10px_35px_rgba(255,255,255,0.2)]"
+              onClick={(e) => e.stopPropagation()}
             />
+          </div>
+        </div>
+      )}
+
+      {pokemonToDelete && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm transition-all duration-300"
+          onClick={() => setPokemonToDelete(null)}
+        >
+          <div 
+            className="w-full max-w-md rounded-3xl border border-white/60 bg-white p-8 shadow-2xl text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl">
+              ⚠️
+            </div>
+            <h3 className="mb-2 text-2xl font-black text-slate-800">
+              Libertar Pokémon?
+            </h3>
+            <p className="text-slate-600 mb-8">
+              Tem a certeza de que deseja libertar o <strong className="capitalize text-red-600">{pokemonToDelete.name}</strong> para a natureza? Esta ação não pode ser desfeita.
+            </p>
+            
+            <div className="flex gap-4">
+              <button
+                onClick={() => setPokemonToDelete(null)}
+                className="w-full rounded-2xl bg-slate-100 py-3 font-bold text-slate-700 transition hover:bg-slate-200"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={executeDelete}
+                className="w-full rounded-2xl bg-red-600 py-3 font-bold text-white transition hover:bg-red-700 shadow-md"
+              >
+                Sim, Apagar
+              </button>
+            </div>
           </div>
         </div>
       )}
