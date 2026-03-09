@@ -109,7 +109,6 @@ export default function Home() {
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
-  // ADICIONADO: Estado para a imagem ampliada (Lightbox)
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchPokemons = useCallback(async () => {
@@ -450,7 +449,6 @@ export default function Home() {
                             <img
                               src={pokemon.imageUrl}
                               alt={pokemon.name}
-                              // ADICIONADO: onClick e classes de hover para dar ideia de clique
                               className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-lg cursor-pointer transition-transform duration-300 hover:scale-110"
                               onClick={() => setSelectedImage(pokemon.imageUrl)}
                             />
@@ -529,7 +527,6 @@ export default function Home() {
                             <img
                               src={pokemon.imageUrl}
                               alt={pokemon.name}
-                              // ADICIONADO: onClick e classes de hover para dar ideia de clique
                               className="h-20 w-20 object-contain drop-shadow-lg cursor-pointer transition-transform duration-300 hover:scale-110"
                               onClick={() => setSelectedImage(pokemon.imageUrl)}
                             />
@@ -634,23 +631,26 @@ export default function Home() {
         )}
       </div>
 
-      {/* ADICIONADO: MODAL DE IMAGEM (LIGHTBOX) */}
+      {/* MODAL DE IMAGEM (LIGHTBOX) AMPLIADO */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm transition-all duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-2 sm:p-4 backdrop-blur-md transition-all duration-300"
           onClick={() => setSelectedImage(null)}
         >
-          <div className="relative flex max-h-[90vh] max-w-4xl flex-col items-center justify-center p-4">
+          <div className="relative flex h-full w-full flex-col items-center justify-center">
+            {/* Botão Fechar ajustado */}
             <button 
               onClick={() => setSelectedImage(null)}
-              className="absolute -top-12 right-0 text-5xl text-white opacity-80 transition hover:text-red-500 hover:opacity-100 sm:-right-12"
+              className="absolute top-4 right-4 z-50 text-6xl text-white opacity-70 transition hover:text-red-500 hover:opacity-100"
             >
               &times;
             </button>
+            
+            {/* Imagem agora ocupa quase toda a tela com sombra reforçada */}
             <img 
               src={selectedImage} 
               alt="Pokémon Ampliado" 
-              className="max-h-[80vh] w-auto animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-2xl"
+              className="max-h-[98vh] max-w-[98vw] w-auto animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-[0_10px_35px_rgba(255,255,255,0.2)]"
               onClick={(e) => e.stopPropagation()} // Previne que feche ao clicar na própria imagem
             />
           </div>
