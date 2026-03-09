@@ -1,6 +1,7 @@
-// src/lib/api.ts
+// pokemon-web/src/lib/api.ts
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3001', 
+  // Tenta ler o URL da nuvem; se não existir, usa o localhost
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
 });
