@@ -18,21 +18,29 @@ Desenvolver uma aplicação restrita a utilizadores autenticados para gerir Pok�
 
 ---
 
+## 🎨 Design e Protótipo (Figma)
+
+Toda a identidade visual, usabilidade e navegação da aplicação foram cuidadosamente desenhadas antes do código. Pode consultar o layout original e os componentes diretamente no Figma:
+
+🔗 **[Acessar Protótipo do Desafio no Figma](https://www.figma.com/design/XFkoJ4EjVijABAWDUA0Oi1/PROTOTIPO---DESAFIO-POKEDEX?node-id=0-1&t=QgW6X79QWd4zheS2-1)**
+
+---
+
 ## ✨ Funcionalidades Implementadas
 
 ### Backend (API)
-* **Autenticação Segura:** Login e Registo de Treinadores utilizando JWT e encriptação de palavras-passe com Bcrypt.
+* **Autenticação Segura:** Login e Registo de Treinadores utilizando JWT e encriptação de senhas com Bcrypt.
 * **CRUD de Pokémons:** Endpoints RESTful completos exigindo campos obrigatórios: Nome, Tipo, Nível, HP e Número da Pokédex.
-* **Paginação e Filtros:** Suporte nativo na API para busca de Pokémons por nome, tipo e separação por páginas.
-* **Perfil de Utilizador Atualizável:** Rota para atualizar os dados do treinador, incluindo o upload de Avatares convertidos em Base64 para armazenamento direto na base de dados, contornando limitações de *ephemeral filesystems* em plataformas gratuitas de deploy.
+* **Paginação e Filtros:** Suporte nativo na API para pesquisa de Pokémons por nome, tipo e separação por páginas.
+* **Perfil de Utilizador Atualizável:** Rota para atualizar os dados do treinador, permitindo alteração segura de senha e gestão da imagem do Avatar.
 * **Documentação Viva:** Integração completa com Swagger (`/api`) para testar os endpoints rapidamente.
 
 ### Frontend (Web)
-* **UI/UX Moderna:** Interface desenhada com Tailwind CSS, focada em *Glassmorphism*, gradientes baseados no tipo do Pokémon e interações responsivas.
-* **Gestão de Perfil Gamificada:** Os utilizadores podem escolher Avatares dinâmicos gerados via DiceBear no momento do registo/edição, ou fazer o upload da sua própria foto do computador.
+* **UI/UX Moderna:** Interface baseada no protótipo Figma, desenhada com Tailwind CSS, focada em *Glassmorphism*, gradientes baseados no tipo do Pokémon e interações responsivas.
+* **Gestão de Perfil Gamificada:** Os utilizadores podem escolher Avatares dinâmicos (gerados via DiceBear), colar URLs personalizadas e gerir a segurança da conta (troca de senha).
 * **Múltiplas Visualizações:** Alternância fluida (Toggle) entre o modo "Grade" (Cards clássicos) e o modo "Lista" horizontal para a Pokédex.
-* **Formulários Interativos:** Substituição de inputs de texto tradicionais por grades clicáveis para seleção do Tipo do Pokémon, evitando erros de digitação.
-* **Proteção de Rotas:** O Next.js valida a existência do Token JWT e redireciona utilizadores não autenticados para a página de Login.
+* **Filtros Dinâmicos:** Filtro de pesquisa de tipos através de "Chips" (botões clicáveis) e expansão da imagem do Pokémon via modal (Lightbox).
+* **Proteção e Feedback:** Rotas protegidas pelo Next.js, com modais de confirmação customizados antes de exclusões para evitar ações acidentais.
 
 ---
 
@@ -50,7 +58,7 @@ O projeto adota uma arquitetura em dois blocos distintos para total desacoplamen
 ### 🎨 Frontend (`/pokemon-web`)
 * **Framework:** React com Next.js (App Router)
 * **Linguagem:** TypeScript
-* **Estilização:** Tailwind CSS
+* **Estilização:** Tailwind CSS & Lucide Icons
 * **Comunicação HTTP:** Axios (com gestão centralizada do Bearer Token)
 
 ---
@@ -76,10 +84,9 @@ Certifique-se de que tem o **Node.js** e o **PostgreSQL** instalados na sua máq
 
 ## ☁️ Extras Cumpridos do Desafio
 
-O desafio sugeriu como extras:
-- [x] **Paginação e Filtros de Busca:** Implementados no backend e consumidos no frontend.
+- [x] **Paginação e Filtros de Busca:** Implementados de forma reativa e conectada ao backend.
 - [ ] **Deploy:** (A indicar - Vercel / Render).
-- [x] **Testes Automatizados:** Configurados via Jest no ambiente NestJS.
+- [ ] **Testes Automatizados:** Configurados via Jest no ambiente NestJS.
 
 ---
 
