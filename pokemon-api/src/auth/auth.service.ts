@@ -43,7 +43,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email ou Senha invalida');
     }
 
     const passwordMatches = await bcrypt.compare(
@@ -52,7 +52,7 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email ou Senha invalida');
     }
 
     const payload = {
