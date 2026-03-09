@@ -107,8 +107,10 @@ export default function Home() {
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
 
-  // ADICIONADO: Estado para controlar o modo de visualização (grade ou lista)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  
+  // ADICIONADO: Estado para a imagem ampliada (Lightbox)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchPokemons = useCallback(async () => {
     setLoading(true);
@@ -272,23 +274,28 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 p-6 sm:grid-cols-3">
-            <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
-              <p className="text-sm text-red-700">Pokémons visíveis</p>
-              <p className="mt-1 text-2xl font-extrabold text-red-600">
-                {pokemons.length}
-              </p>
+            <div className="rounded-2xl border border-red-100 bg-red-50 p-5 shadow-sm transition hover:shadow-md">
+              <p className="text-xs font-black uppercase tracking-widest text-red-500">Espécies na Box</p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-red-700">{pokemons.length}</p>
+                <span className="text-sm font-bold text-red-400">pokémons</span>
+              </div>
             </div>
-            <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-              <p className="text-sm text-blue-700">Página atual</p>
-              <p className="mt-1 text-2xl font-extrabold text-blue-600">
-                {page}
-              </p>
+            
+            <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5 shadow-sm transition hover:shadow-md">
+              <p className="text-xs font-black uppercase tracking-widest text-blue-500">Sessão da Pokédex</p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-blue-700">{page}</p>
+                <span className="text-sm font-bold text-blue-400">página atual</span>
+              </div>
             </div>
-            <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-              <p className="text-sm text-amber-700">Total de páginas</p>
-              <p className="mt-1 text-2xl font-extrabold text-amber-600">
-                {totalPages}
-              </p>
+            
+            <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm transition hover:shadow-md">
+              <p className="text-xs font-black uppercase tracking-widest text-amber-500">Capacidade Total</p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-amber-700">{totalPages}</p>
+                <span className="text-sm font-bold text-amber-400">páginas</span>
+              </div>
             </div>
           </div>
         </header>
@@ -358,7 +365,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ADICIONADO: Controles de alternância de visualização */}
         {!loading && pokemons.length > 0 && (
           <div className="mb-6 flex justify-end gap-2">
             <button
@@ -422,7 +428,6 @@ export default function Home() {
                   currentUser?.id && pokemon.createdBy?.id === currentUser.id;
                 const typeGradient = getTypeColor(pokemon.type);
 
-                // --- RENDERIZAÇÃO MODO LISTA ---
                 if (viewMode === "list") {
                   return (
                     <article
@@ -445,7 +450,9 @@ export default function Home() {
                             <img
                               src={pokemon.imageUrl}
                               alt={pokemon.name}
-                              className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-lg"
+                              // ADICIONADO: onClick e classes de hover para dar ideia de clique
+                              className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-lg cursor-pointer transition-transform duration-300 hover:scale-110"
+                              onClick={() => setSelectedImage(pokemon.imageUrl)}
                             />
                           </div>
                         ) : (
@@ -499,7 +506,6 @@ export default function Home() {
                   );
                 }
 
-                // --- RENDERIZAÇÃO MODO GRADE (DEFAULT) ---
                 return (
                   <article
                     key={pokemon.id}
@@ -523,7 +529,9 @@ export default function Home() {
                             <img
                               src={pokemon.imageUrl}
                               alt={pokemon.name}
-                              className="h-20 w-20 object-contain drop-shadow-lg"
+                              // ADICIONADO: onClick e classes de hover para dar ideia de clique
+                              className="h-20 w-20 object-contain drop-shadow-lg cursor-pointer transition-transform duration-300 hover:scale-110"
+                              onClick={() => setSelectedImage(pokemon.imageUrl)}
                             />
                           </div>
                         ) : (
@@ -561,9 +569,7 @@ export default function Home() {
                           <span className="font-medium text-slate-500">
                             Tipo
                           </span>
-                          <span className="font-bold text-slate-800">
-                            {pokemon.type}
-                          </span>
+                          <span className="font-bold text-slate-800">{pokemon.type}</span>
                         </div>
 
                         <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
@@ -627,6 +633,30 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* ADICIONADO: MODAL DE IMAGEM (LIGHTBOX) */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4 backdrop-blur-sm transition-all duration-300"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative flex max-h-[90vh] max-w-4xl flex-col items-center justify-center p-4">
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-12 right-0 text-5xl text-white opacity-80 transition hover:text-red-500 hover:opacity-100 sm:-right-12"
+            >
+              &times;
+            </button>
+            <img 
+              src={selectedImage} 
+              alt="Pokémon Ampliado" 
+              className="max-h-[80vh] w-auto animate-[pulse_0.5s_ease-out_forwards] object-contain drop-shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // Previne que feche ao clicar na própria imagem
+            />
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }
