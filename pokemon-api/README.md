@@ -80,7 +80,7 @@ npm install
 Crie um arquivo `.env` na raiz do projeto:
 
 ``` env
-PORT=3000
+PORT=3001
 
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
@@ -114,7 +114,7 @@ npm run start:dev
 
 A aplicação estará disponível em:
 
-    http://localhost:3000
+    http://localhost:3001
 
 ------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ A aplicação estará disponível em:
 
 Após iniciar o projeto, acesse:
 
-    http://localhost:3000/api
+    http://localhost:3001/api
 
 No Swagger é possível:
 

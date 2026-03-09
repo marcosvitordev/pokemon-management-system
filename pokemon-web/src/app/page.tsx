@@ -445,7 +445,7 @@ export default function Home() {
                             <img
                               src={pokemon.imageUrl}
                               alt={pokemon.name}
-                              className="h-16 w-16 sm:h-24 sm:w-24 object-contain drop-shadow-lg"
+                              className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-lg"
                             />
                           </div>
                         ) : (
